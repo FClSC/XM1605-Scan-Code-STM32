@@ -156,17 +156,16 @@ void UART5_Start_Scan(void)//发送扫码指令
 }
 
 
-void UART5_PraseCode(const char *Buf, uint16_t *code1, uint16_t *code2) //解析“123+321”为整形 123和321保存于code1和code2中
+void UART5_ParseCode(const char *Buf, int16_t *code1, int16_t *code2)
 {
+    // 直接解析第一个三位数
+    *code1 = (Buf[0] - '0') * 100 + 
+            (Buf[1] - '0') * 10 + 
+            (Buf[2] - '0');
 
-    char tempBuf[256];
-    strcpy(tempBuf, Buf);
-
-    char *plusSign = strchr(tempBuf, '+');
-    if (plusSign != NULL) 
-    {
-        *plusSign = '\0';
-        *code1 = atoi(tempBuf);
-        *code2 = atoi(plusSign + 1);
-    } 
+    // 跳过 '+' 号解析第二个三位数
+    *code2 = (Buf[4] - '0') * 100 + 
+            (Buf[5] - '0') * 10 + 
+            (Buf[6] - '0');
+	
 }
